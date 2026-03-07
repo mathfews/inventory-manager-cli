@@ -41,7 +41,7 @@ def start_cli():
         user_select = options[select]
         if user_select == "add_product":
             while True:
-                name = create_input("Enter the product name(Enter 0 to return): ")
+                name = create_input("Enter the product name(Enter 0 to return): ").lower()
                 if name == "0":
                     clean_terminal()
                     break
@@ -55,7 +55,7 @@ def start_cli():
                     break
         if user_select == "remove_product":
             while True:
-                identifier = create_input("Enter the product name or ID(Enter 0 to return): ")
+                identifier = create_input("Enter the product name or ID(Enter 0 to return): ").lower()
                 if identifier == "0":
                     clean_terminal()
                     break
@@ -65,4 +65,24 @@ def start_cli():
                 clean_terminal()
                 if result[0]:
                     break
+        if user_select == "update_product":
+            while True:
+                identifier = create_input("Enter the product name or ID(Enter 0 to return): ").lower()
+                if identifier == "0":
+                    clean_terminal()
+                    break
+                price = create_input("Enter the new price: ")
+                quantity = create_input("Enter the current amount: ")
+                result = inventory.update_product(identifier, price, quantity)
+                if result[0]:
+                    questionary.print(f"Now, {result[1]}, has the value of {price} and a quantity of {quantity} ", style="bold fg:#1d9944")
+                    input("")
+                    clean_terminal()
+                    break
+                questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
+                input("")
+                clean_terminal()
+        if user_select == "search_product":
+            while True:
+                
 start_cli()
