@@ -1,5 +1,6 @@
 from inventory import Inventory
 import questionary
+import os
 def start_cli():
     options = {
         "Add product": "add_product",
@@ -22,4 +23,5 @@ def start_cli():
         ])
     ).ask()
     return options[select]
-print(tart_cli())
+print(tart_cli())    def clean_terminal():
+        os.system("cls" if os.name == "nt" else "clear")
