@@ -43,11 +43,17 @@ class InventoryManager:
             return False, f"Product {identifier} not found!"
     def list_items(self):
         i = 0
+        products_ids = []
+        producst_names = []
+        products_prices = []
+        product_quantites = []
         print("ID | Name | Price | Quantity")
-        while i < len(self.database.keys()):
-            select = list(self.database.keys())
-            print(f"{select[i]} | {self.database.get(select[i])["name"]} | {self.database.get(select[i])["price"]} | {self.database.get(select[i])["quantity"]}")
-            i += 1
+        for products_id, product in self.database.items():
+            products_ids.append(products_id)
+            producsts_names.append(product["name"])
+            products_prices.append(product["price"])
+            product_quantites.append(product["quantity"])
+        return products_ids, producst_names, products_prices, product_quantites
     def update_product(self, identifier, new_price, quantity):
         product = self.check_name_find_id(identifier)
         if product[0]:
