@@ -13,6 +13,11 @@ class Inventory:
         if self.exists_or_not(name):
             return False, f"The product {name} already exits!"
         try:
+            real_name = int(name)
+            return False, "The name must be a text!"
+        except (ValueError, TypeError):
+            pass
+        try:
             real_price = float(price)
             if real_price < 0:
                 return False, "Enter a positive price!"
@@ -24,22 +29,23 @@ class Inventory:
                 return False, "Enter a positive quantity!"
         except(TypeError, ValueError):
             return False, "Enter a numeric quantity!"
-        product_id = len(self.database) + 1
         self.database[self.generate_id()] = {
             "name":  name,
             "price": real_price,
             "quantity": real_quantity
         }
+        return True, f"Product {name} succesfully added!"
     def check_name_find_id(self, identifier):
         # why should i switch type() to isinstance() here?
-        if type(identifier) == int:
-            if identifier in self.database.keys():
-                return True, "id", identifier
-            return False, f"Product {identifier} ID not found!"
-        elif type(identifier) == str:
+        try:
+            real_id = int(identifier)
+            if real_id in self.database.keys():
+                return True, real_id
+            return False, f"Product ID {real_id} not found!"
+        except (ValueError, TypeError):
             for item in list(self.database.keys()):
                 if identifier == self.database.get(item)["name"]:
-                    return True, "name", item
+                    return True, item
             return False, f"Product {identifier} not found!"
     def list_items(self):
         i = 0
@@ -63,9 +69,10 @@ class Inventory:
     def remove_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
+            name = self.database.get(product[1])["name"]
             del self.database[product[1]]
-            return True, f"Product {product} succesfully deleted!"
-        return product[1]
+            return True, f"Product {name} succesfully deleted!"
+        return False, f"Product {identifier} not found!"
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
