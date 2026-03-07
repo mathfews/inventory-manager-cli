@@ -11,7 +11,7 @@ class Inventory:
         return self.next_num
     def add_product(self, name, price, quantity):
         if self.exists_or_not(name):
-            return False, f"The product {name} already exits!"
+            return False, f"The product {name.capitalize()} already exits!"
         try:
             real_name = int(name)
             return False, "The name must be a text!"
@@ -34,7 +34,7 @@ class Inventory:
             "price": real_price,
             "quantity": real_quantity
         }
-        return True, f"Product {name} succesfully added!"
+        return True, f"Product {name.capitalize()} succesfully added!"
     def check_name_find_id(self, identifier):
         # why should i switch type() to isinstance() here?
         try:
@@ -56,16 +56,23 @@ class Inventory:
         print("ID | Name | Price | Quantity")
         for products_id, product in self.database.items():
             products_ids.append(products_id)
-            producsts_names.append(product["name"])
+            producsts_names.append(product["name"].capitalize())
             products_prices.append(product["price"])
             product_quantites.append(product["quantity"])
         return products_ids, producst_names, products_prices, product_quantites
-    def update_product(self, identifier, new_price, quantity):
+    def update_product(self, identifier, new_price, new_quantity):
         product = self.check_name_find_id(identifier)
         if product[0]:
-            self.database[product[2]]["price"] = float(new_price)
-            return True
-        return False
+            try:
+                self.database[product[1]]["price"] = float(new_price)
+            except (ValueError, TypeError):
+                return False, "Enter a numeric price!"
+            try:
+                self.database[product[1]]["price"] = int(quantity)
+            except (ValueError, TypeError):
+                return False, "Enter a numeric quantity!"
+            return True, self.database[product[1]]["name"]
+        return False, f"Product {identifier} not found!"
     def remove_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
