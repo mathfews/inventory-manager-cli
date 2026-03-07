@@ -1,5 +1,5 @@
 import random
-class InventoryManager:
+class Inventory:
     def __init__(self):
         self.database = {}
         self.next_num = 0
@@ -72,15 +72,3 @@ class InventoryManager:
             info = self.database[product[2]]
             return True, product[2], info
         return False, product[1]
-im = InventoryManager()
-# posso usar o questionary com o autocomplete pra puxar os ids como forma de pesquisa no CLI
-im.add_product("Teclado", 100, 1)
-im.add_product("Mesa", 100, 3)
-im.add_product("PC", 100, 20)
-print(im.search_product("PC"))
-im.list_items()
-""" im.update_product("PC", 800, 10)
-im.list_items()
-im.add_product("Livro", 23, 6)
-im.add_product("Caderno", 11, 7)
-im.add_product("Folha", 82, 9) """
