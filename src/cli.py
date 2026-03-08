@@ -99,6 +99,7 @@ def start_cli():
             while True:
                 identifier = create_input("Enter the product name or ID(Enter 0 to return): ").lower()
                 if identifier == "0":
+                    clean_terminal()
                     break
                 result = inventory.search_product(identifier)
                 if result[0]:
