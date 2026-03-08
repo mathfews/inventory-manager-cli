@@ -31,7 +31,7 @@ class Inventory:
             return False, "Enter a numeric quantity!"
         self.database[self.generate_id()] = {
             "name":  name,
-            "price": real_price,
+            "price": f"${real_price}",
             "quantity": real_quantity
         }
         return True, f"Product {name.capitalize()} succesfully added!"
@@ -48,18 +48,17 @@ class Inventory:
                     return True, item
             return False, f"Product {identifier} not found!"
     def list_items(self):
-        i = 0
         products_ids = []
-        producst_names = []
+        products_names = []
         products_prices = []
-        product_quantites = []
+        products_quantites = []
         print("ID | Name | Price | Quantity")
         for products_id, product in self.database.items():
             products_ids.append(products_id)
-            producsts_names.append(product["name"].capitalize())
+            products_names.append(product["name"].capitalize())
             products_prices.append(product["price"])
-            product_quantites.append(product["quantity"])
-        return products_ids, producst_names, products_prices, product_quantites
+            products_quantites.append(product["quantity"])
+        return products_ids, products_names, products_prices, products_quantites
     def update_product(self, identifier, new_price, new_quantity):
         product = self.check_name_find_id(identifier)
         if product[0]:
@@ -83,6 +82,6 @@ class Inventory:
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
-            info = self.database[product[2]]
-            return True, product[2], info
-        return False, product[1]
+            info = list(self.database[product[1]].items())
+            return True, info
+        return False, f"Product {identifier} not found!"
