@@ -1,7 +1,9 @@
 from inventory import Inventory
+from prettytable import  PrettyTable
 import questionary
 import os
 inventory = Inventory()
+table = PrettyTable()
 def start_cli():
     def clean_terminal():
         os.system("cls" if os.name == "nt" else "clear")
@@ -82,6 +84,17 @@ def start_cli():
                 questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
                 input("")
                 clean_terminal()
+        if user_select == "list_product":
+            while True:
+                info = inventory.list_items()
+                table.add_column("ID", info[0])
+                table.add_column("Name", info[1])
+                table.add_column("Price", info[2])
+                table.add_column("Quantity", info[3])
+                print(table)
+                input("")
+                clean_terminal()
+                break
         if user_select == "search_product":
             while True:
                 
