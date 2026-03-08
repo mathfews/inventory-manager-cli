@@ -97,5 +97,17 @@ def start_cli():
                 break
         if user_select == "search_product":
             while True:
-                
+                identifier = create_input("Enter the product name or ID(Enter 0 to return): ").lower()
+                if identifier == "0":
+                    break
+                result = inventory.search_product(identifier)
+                if result[0]:
+                    print(f"* ID: {result[1]}\n* Name: {result[2]["name"].title()}\n* Price: {result[2]["price"]}\n* Quantity: {result[2]["quantity"]}")
+                    input("")
+                    clean_terminal()
+                    break
+                questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
+                input("")
+                clean_terminal()
+
 start_cli()
