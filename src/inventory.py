@@ -67,7 +67,7 @@ class Inventory:
             except (ValueError, TypeError):
                 return False, "Enter a numeric price!"
             try:
-                self.database[product[1]]["price"] = int(quantity)
+                self.database[product[1]]["quantity"] = int(new_quantity)
             except (ValueError, TypeError):
                 return False, "Enter a numeric quantity!"
             return True, self.database[product[1]]["name"]
@@ -82,6 +82,5 @@ class Inventory:
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
-            info = list(self.database[product[1]].items())
-            return True, info
+            return True, product[1], self.database[product[1]]
         return False, f"Product {identifier} not found!"
