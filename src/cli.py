@@ -110,5 +110,3 @@ def start_cli():
                 questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
                 input("")
                 clean_terminal()
-
-start_cli()
