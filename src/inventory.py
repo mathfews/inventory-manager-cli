@@ -1,14 +1,19 @@
 import random
+import sqlite3
 class Inventory:
     def __init__(self):
-        self.database = {}
-        self.next_num = 0
+        self.connect = sqlite3.connect("database.db")
+        self.cursor = self.connect.cursor()
+        cursor.execute("CREATE TABLE IF NO EXISTS products (" \
+        "id INTEGER PRIMARY KEY AUTOINCREMENT," \
+        "name TEXT NOT NULL UNIQUE," \
+        "price REAL CHECK (price > 0)," \
+        "amount REAL CHECK (amount >= 0)," \
+        ") STRICT")
+
     def exists_or_not(self, name):
         exits = any(item["name"] == name for item in self.database.values())
         return exits
-    def generate_id(self):
-        self.next_num += 1
-        return self.next_num
     def add_product(self, name, price, quantity):
         if self.exists_or_not(name):
             return False, f"The product {name.capitalize()} already exits!"

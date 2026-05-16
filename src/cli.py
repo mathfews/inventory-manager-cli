@@ -4,7 +4,7 @@ import questionary
 import os
 inventory = Inventory()
 table = PrettyTable()
-def start_cli():
+def start_cli(inventory):
     def clean_terminal():
         os.system("cls" if os.name == "nt" else "clear")
     clean_terminal()
