@@ -85,12 +85,12 @@ def start_cli(inventory):
                 input("")
                 clean_terminal()
         if user_select == "list_product":
+            table = PrettyTable()
             while True:
-                info = inventory.list_items()
-                table.add_column("ID", info[0])
-                table.add_column("Name", info[1])
-                table.add_column("Price", info[2])
-                table.add_column("Quantity", info[3])
+                table.field_names = ["ID", "Name", "Price($)", "Amount"]
+                rows = inventory.list_items()
+                for row in rows:
+                    table.add_row([row[0], row[1].title(), f"${row[2]}", int(row[3])])
                 print(table)
                 input("")
                 clean_terminal()
@@ -104,7 +104,7 @@ def start_cli(inventory):
                 result = inventory.search_product(identifier)
                 if result[0]:
                     table = PrettyTable()
-                    table.field_names = ["ID", "Name", "Price", "Amount"]
+                    table.field_names = ["ID", "Name", "Price($)", "Amount"]
                     table.add_row([result[1][0], result[1][1].title(), f"${result[1][2]}", int(result[1][3])])
                     print(table)
                 else:

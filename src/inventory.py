@@ -41,17 +41,9 @@ class Inventory:
         else:
             return False, "Product not found!"
     def list_items(self):
-        products_ids = []
-        products_names = []
-        products_prices = []
-        products_quantites = []
-        print("ID | Name | Price | Quantity")
-        for products_id, product in self.database.items():
-            products_ids.append(products_id)
-            products_names.append(product["name"].capitalize())
-            products_prices.append(product["price"])
-            products_quantites.append(product["quantity"])
-        return products_ids, products_names, products_prices, products_quantites
+        self.cursor.execute("SELECT * FROM products")
+        rows = self.cursor.fetchall()
+        return rows
     def update_product(self, identifier, new_price, new_quantity):
         product = self.check_name_find_id(identifier)
         if product[0]:
