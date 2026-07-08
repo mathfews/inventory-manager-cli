@@ -103,10 +103,11 @@ def start_cli(inventory):
                     break
                 result = inventory.search_product(identifier)
                 if result[0]:
-                    print(f"* ID: {result[1]}\n* Name: {result[2]["name"].title()}\n* Price: {result[2]["price"]}\n* Quantity: {result[2]["quantity"]}")
-                    input("")
-                    clean_terminal()
-                    break
-                questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
+                    table = PrettyTable()
+                    table.field_names = ["ID", "Name", "Price", "Amount"]
+                    table.add_row([result[1][0], result[1][1].title(), f"${result[1][2]}", int(result[1][3])])
+                    print(table)
+                else:
+                    questionary.print(f"* {result[1]}", style="bold fg:#1d9944")
                 input("")
                 clean_terminal()

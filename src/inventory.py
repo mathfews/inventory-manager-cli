@@ -30,17 +30,16 @@ class Inventory:
         self.cursor.execute("SELECT * FROM products")
         return True, f"Product {name.capitalize()} succesfully added!"
     def check_name_find_id(self, identifier):
-        # why should i switch type() to isinstance() here?
         try:
-            real_id = int(identifier)
-            if real_id in self.database.keys():
-                return True, real_id
-            return False, f"Product ID {real_id} not found!"
+            id = int(identifier)
+            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE id = ?", (id,))
         except (ValueError, TypeError):
-            for item in list(self.database.keys()):
-                if identifier == self.database.get(item)["name"]:
-                    return True, item
-            return False, f"Product {identifier} not found!"
+            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE name = ?", (identifier))
+        product = self.cursor.fetchone()
+        if product:
+            return True, product
+        else:
+            return False, "Product not found!"
     def list_items(self):
         products_ids = []
         products_names = []
@@ -75,6 +74,4 @@ class Inventory:
         return False, f"Product {identifier} not found!"
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
-        if product[0]:
-            return True, product[1], self.database[product[1]]
-        return False, f"Product {identifier} not found!"
+        return product[0], product[1]
