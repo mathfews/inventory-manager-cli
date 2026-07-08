@@ -4,41 +4,30 @@ class Inventory:
     def __init__(self):
         self.connect = sqlite3.connect("database.db")
         self.cursor = self.connect.cursor()
-        cursor.execute("CREATE TABLE IF NO EXISTS products (" \
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS products (" \
         "id INTEGER PRIMARY KEY AUTOINCREMENT," \
         "name TEXT NOT NULL UNIQUE," \
         "price REAL CHECK (price > 0)," \
-        "amount REAL CHECK (amount >= 0)," \
-        ") STRICT")
-
-    def exists_or_not(self, name):
-        exits = any(item["name"] == name for item in self.database.values())
-        return exits
+        "amount REAL CHECK (amount >= 0)" \
+        "), STRICT")
+        self.connect.commit()
     def add_product(self, name, price, quantity):
-        if self.exists_or_not(name):
-            return False, f"The product {name.capitalize()} already exits!"
         try:
-            real_name = int(name)
-            return False, "The name must be a text!"
-        except (ValueError, TypeError):
-            pass
-        try:
-            real_price = float(price)
-            if real_price < 0:
-                return False, "Enter a positive price!"
-        except (ValueError, TypeError):
-            return False, "Enter a numeric price!"
-        try:
-            real_quantity = int(quantity)
-            if real_quantity < 0:
-                return False, "Enter a positive quantity!"
-        except(TypeError, ValueError):
-            return False, "Enter a numeric quantity!"
-        self.database[self.generate_id()] = {
-            "name":  name,
-            "price": f"${real_price}",
-            "quantity": real_quantity
-        }
+            self.cursor.execute("INSERT INTO products (name, price, amount) VALUES (?,?,?)", (name, price, quantity))
+        except sqlite3.IntegrityError as _error:
+            error = str(_error)
+            if "products.name" in error:
+                return False, f"The product {name.capitalize()} already exists!"
+            elif "products.price" in error:
+                return False, "The price must be a real number!"
+            elif "products.amount" in error:
+                return False, "The amount must be a real number!"
+            elif "price > 0" in error:
+                return False, "Prices must be greater than zero"
+            elif "amount >= 0" in error:
+                return False, "Amounts cannot be negative!"
+        self.connect.commit()
+        self.cursor.execute("SELECT * FROM products")
         return True, f"Product {name.capitalize()} succesfully added!"
     def check_name_find_id(self, identifier):
         # why should i switch type() to isinstance() here?
