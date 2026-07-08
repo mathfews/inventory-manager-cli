@@ -1,8 +1,6 @@
 # 📦 Inventory Manager CLI
 A beautifully interactive Command-Line Interface (CLI) application for managing product inventory, built with Python. 
 
-> **✅ Database Integration Complete:** The system now reliably stores data using an **SQLite database** for persistent and efficient inventory management.
-
 ## ✨ Features
 
 - **Add Product:** Easily add new products with their name, price, and quantity.
