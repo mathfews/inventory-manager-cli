@@ -11,21 +11,24 @@ class Inventory:
         "amount REAL CHECK (amount >= 0)" \
         "), STRICT")
         self.connect.commit()
+    def _handle_integrity_error(self, error, name=None):
+        error = str(error)
+        if "products.name" in error:
+            return False, f"The product {name.capitalize()} already exists!"
+        elif "products.price" in error:
+            return False, "The price must be a real number!"
+        elif "products.amount" in error:
+            return False, "The amount must be a real number!"
+        elif "price > 0" in error:
+            return False, "Prices must be greater than zero"
+        elif "amount >= 0" in error:
+            return False, "Amounts cannot be negative!"
+        return False, "An unexpected database error occurred."
     def add_product(self, name, price, quantity):
         try:
             self.cursor.execute("INSERT INTO products (name, price, amount) VALUES (?,?,?)", (name, price, quantity))
-        except sqlite3.IntegrityError as _error:
-            error = str(_error)
-            if "products.name" in error:
-                return False, f"The product {name.capitalize()} already exists!"
-            elif "products.price" in error:
-                return False, "The price must be a real number!"
-            elif "products.amount" in error:
-                return False, "The amount must be a real number!"
-            elif "price > 0" in error:
-                return False, "Prices must be greater than zero"
-            elif "amount >= 0" in error:
-                return False, "Amounts cannot be negative!"
+        except sqlite3.IntegrityError as error:
+            return self._handle_integrity_error(error, name)
         self.connect.commit()
         self.cursor.execute("SELECT * FROM products")
         return True, f"Product {name.capitalize()} succesfully added!"
@@ -34,7 +37,8 @@ class Inventory:
             id = int(identifier)
             self.cursor.execute("SELECT id, name, price, amount FROM products WHERE id = ?", (id,))
         except (ValueError, TypeError):
-            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE name = ?", (identifier))
+            name = str(identifier).lower()
+            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE name = ?", (name,))
         product = self.cursor.fetchone()
         if product:
             return True, product
@@ -48,15 +52,13 @@ class Inventory:
         product = self.check_name_find_id(identifier)
         if product[0]:
             try:
-                self.database[product[1]]["price"] = float(new_price)
-            except (ValueError, TypeError):
-                return False, "Enter a numeric price!"
-            try:
-                self.database[product[1]]["quantity"] = int(new_quantity)
-            except (ValueError, TypeError):
-                return False, "Enter a numeric quantity!"
-            return True, self.database[product[1]]["name"]
-        return False, f"Product {identifier} not found!"
+                self.cursor.execute("UPDATE products SET price = ?, amount = ? WHERE id = ?", (new_price, new_quantity, product[1][0]))
+                self.connect.commit()
+            except sqlite3.IntegrityError as error:
+                return self._handle_integrity_error(error, product[1][1])
+            return product
+        else:
+            return product
     def remove_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:

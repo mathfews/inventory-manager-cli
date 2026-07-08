@@ -73,11 +73,11 @@ def start_cli(inventory):
                 if identifier == "0":
                     clean_terminal()
                     break
-                price = create_input("Enter the new price: ")
-                quantity = create_input("Enter the current amount: ")
+                price = float(create_input("Enter the new price: "))
+                quantity = int(create_input("Enter the current amount: "))
                 result = inventory.update_product(identifier, price, quantity)
                 if result[0]:
-                    questionary.print(f"Now, {result[1]}, has the value of {price} and a quantity of {quantity} ", style="bold fg:#1d9944")
+                    questionary.print(f"Now, {result[1][1].title()}, has the value of ${price} and a quantity of {quantity} ", style="bold fg:#1d9944")
                     input("")
                     clean_terminal()
                     break
