@@ -62,10 +62,11 @@ class Inventory:
     def remove_product(self, identifier):
         product = self.check_name_find_id(identifier)
         if product[0]:
-            name = self.database.get(product[1])["name"]
-            del self.database[product[1]]
-            return True, f"Product {name} succesfully deleted!"
-        return False, f"Product {identifier} not found!"
+            product_name = product[1][1].title()
+            self.cursor.execute("DELETE FROM products WHERE id = ?", (product[1][0],))
+            self.connect.commit()
+            return True, f"Product {product_name} successfully deleted!"
+        return product
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
         return product[0], product[1]
