@@ -73,11 +73,16 @@ def start_cli(inventory):
                 if identifier == "0":
                     clean_terminal()
                     break
-                price = float(create_input("Enter the new price: "))
-                quantity = int(create_input("Enter the current amount: "))
+                product = inventory.check_name_find_id(identifier)
+                price = create_input("Enter the new price(or 'same'): ").lower()
+                if price == "same":
+                    price = product[1][2]
+                quantity = create_input("Enter the current amount(or 'same'): ").lower()
+                if quantity == "same":
+                    quantity = product[1][3]
                 result = inventory.update_product(identifier, price, quantity)
                 if result[0]:
-                    questionary.print(f"Now, {result[1][1].title()}, has the value of ${price} and a quantity of {quantity} ", style="bold fg:#1d9944")
+                    questionary.print(f"{result[1][1].title()} has been updated. It now costs ${price} and has a quantity of {quantity}. ", style="bold fg:#1d9944")
                     input("")
                     clean_terminal()
                     break
