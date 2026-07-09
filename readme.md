@@ -39,4 +39,3 @@ Once you start the application, you'll be greeted with an interactive menu. Use 
    List product
    Search product
 ```
-```

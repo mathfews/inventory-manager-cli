@@ -30,12 +30,11 @@ class Inventory:
         except sqlite3.IntegrityError as error:
             return self._handle_integrity_error(error, name)
         self.connect.commit()
-        self.cursor.execute("SELECT * FROM products")
         return True, f"Product {name.capitalize()} succesfully added!"
     def check_name_find_id(self, identifier):
         try:
-            id = int(identifier)
-            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE id = ?", (id,))
+            product_id = int(identifier)
+            self.cursor.execute("SELECT id, name, price, amount FROM products WHERE id = ?", (product_id,))
         except (ValueError, TypeError):
             name = str(identifier).lower()
             self.cursor.execute("SELECT id, name, price, amount FROM products WHERE name = ?", (name,))
@@ -69,4 +68,4 @@ class Inventory:
         return product
     def search_product(self, identifier):
         product = self.check_name_find_id(identifier)
-        return product[0], product[1]
+        return product
